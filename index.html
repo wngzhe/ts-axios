@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body{
+            display: flex;
+            heigh:100%;
+            justify-items: center;
+            align-items: center;
+        }
+        #demoCanvas{
+            position: fixed;
+            top:0;
+            left:0;
+            display: flex;
+            flex:1;
+            width: 100%;
+            height: 100vh;
+            justify-items: center;
+            align-items: center;
+        }
+        canavs
+    </style>
+</head>
+
+<body>
+    <div id="demoCanvas"></div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/svgaplayerweb@2.3.0/build/svga.min.js"></script>
+<script>
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    var svga  = getQueryString('svga')||'http://119.27.167.20:8008/gift/5cdcd9d69d1af.svga'
+    var player = new SVGA.Player('#demoCanvas');
+    var parser = new SVGA.Parser('#demoCanvas'); // Must Provide same selector eg:#demoCanvas IF support IE6+
+    parser.load(svga, function (videoItem) {
+        // player.loops =5;
+        player.setVideoItem(videoItem);
+        player.startAnimation();
+    })
+</script>
+
+</html>

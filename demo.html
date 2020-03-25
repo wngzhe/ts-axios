@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #root canvas {
+            width: 830px;
+            height: 490px;
+            border: 1px solid #09c
+        }
+    </style>
+</head>
+
+<body>
+    <button id="stop">stop</button>
+    <div id="root"></div>
+
+    <canvas id="canvas" style="display:block;border:1px solid #ccc;margin:20px auto"></canvas>
+</body>
+<script>
+    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+    var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame || webkitCancelAnimationFrame;
+    var config = {
+        w: 830,
+        h: 490,
+        time: 1000
+    }
+    var rq = null
+    var startTime = new Date().valueOf();
+    var playTime = 0;
+    var list = [{
+        x: 415,
+        y: 0,
+        sx: 415,
+        sy: 0,
+        ex: 100,
+        ey: 490,
+        ss: 300,
+        es: 100,
+        s: 300,
+    }, {
+        x: 415,
+        y: 0,
+        sx: 415,
+        sy: 0,
+        ex: 400,
+        ey: 490,
+        ss: 300,
+        es: 100,
+        s: 300,
+    }, {
+        x: 415,
+        y: 0,
+        sx: 415,
+        sy: 0,
+        ex: 700,
+        ey: 490,
+        ss: 300,
+        es: 100,
+        s: 300,
+    }]
+    // var ball = { startX: 512, startY: 100, x: 512, y: 100, r: 100, g: 20, vx: -40, vy: 0, color: "#005588" };//x,y表示坐标   半径r  加速度g 速度vx 速度vy也就是y方向的速度
+    var img = new Image()
+    img.src = "./gift.png"
+    this.img = img
+    // requestAnimationFrame
+    //cancelAnimationFrame
+
+    window.onload = function () {
+        var canvas = document.getElementById("canvas");
+        canvas.width = 1024;
+        canvas.height = 768;
+        var context = canvas.getContext("2d");
+        // requestAnimationFrame(run)
+        function stop() {
+            console.log('Stop', rq)
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+            window.cancelAnimationFrame(rq)
+        }
+        function run() {
+            playTime = new Date().valueOf() - startTime
+            render(context);
+            update();
+            if (list[0].x <= list[0].ex) {
+                stop()
+            } else {
+                rq = requestAnimationFrame(run)
+            }
+        }
+        document.getElementById('stop').onclick = function () {
+            stop()
+        }
+
+        function update() {
+
+            list.forEach((v, i) => {
+                list[i].x = v.sx + (v.ex - v.sx) * playTime / config.time;
+                list[i].y = v.sy + (v.ey - v.sy) * playTime / config.time
+                list[i].s = v.ss + (v.es - v.ss) * playTime / config.time
+            })
+            console.log(list)
+            // console.log(playTime, ball.x, ball.y)
+            // ball.vy += ball.g;
+            // if (ball.y >= 768 - ball.r) {
+            //     ball.y = 768 - ball.r;
+            //     ball.vy = -ball.vy * 0.5;
+            // }
+
+        }
+        function render(cxt) {
+            cxt.clearRect(0, 0, cxt.canvas.width, cxt.canvas.height);
+            // cxt.fillStyle = ball.color;
+
+            cxt.beginPath();
+            list.forEach(v => {
+                cxt.drawImage(img, v.x, v.y, v.s, v.s)
+            })
+            // cxt.arc(ball.x, ball.y, ball.r, 0, 2 * Math.PI);
+
+            cxt.closePath();
+            cxt.fill();
+        }
+
+        // run()
+
+    }
+    class GiftAnim {
+        constructor({
+            width = 830,
+            height = 490,
+            time = 1000,
+            ref,
+            img = null,
+            onfinish = function () { console.log('finish') }
+        }) {
+            this.config = {
+                w: 830,
+                h: 490,
+                time: 1000
+            }
+            this.list = [{
+                x: 415,
+                y: 0,
+                sx: 415,
+                sy: 0,
+                ex: 100,
+                ey: 390,
+                ss: 300,
+                es: 100,
+                s: 300,
+            }, {
+                x: 415,
+                y: 0,
+                sx: 415,
+                sy: 0,
+                ex: 400,
+                ey: 390,
+                ss: 300,
+                es: 100,
+                s: 300,
+            }, {
+                x: 415,
+                y: 0,
+                sx: 415,
+                sy: 0,
+                ex: 700,
+                ey: 390,
+                ss: 300,
+                es: 100,
+                s: 300,
+            }];
+            this.img = new Image()
+            this.img.src = "./gift.png"
+            this.ref = ref
+            this.requestCode = null
+            this.cxt = null
+            this.startTime = new Date().valueOf()
+            this.playTime = 0
+            this.canvas = null
+            this.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+            this.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame || webkitCancelAnimationFrame;
+            this.onfinish = onfinish
+            if (ref) {
+                var canvas = document.createElement('canvas')
+                canvas.width = width;
+                canvas.height = height;
+                this.canvas = canvas
+                this.ref.appendChild(canvas)
+                this.cxt = canvas.getContext("2d");
+            }
+        }
+
+        run = () => {
+            var requestAnimationFrame = this.requestAnimationFrame
+            this.render();
+            this.update();
+            list = this.list
+            if (list[0].x <= list[0].ex) {
+                this.stop()
+            } else {
+                this.requestCode = requestAnimationFrame(this.run)
+            }
+        }
+        stop = () => {
+            var cancelAnimationFrame = this.cancelAnimationFrame
+            this.cxt.clearRect(0, 0, this.cxt.canvas.width, this.cxt.canvas.height);
+            cancelAnimationFrame(rq)
+            this.onfinish()
+        }
+        update = () => {
+            var playTime = new Date().valueOf() - this.startTime
+            var time = this.config.time
+            var list = [...this.list]
+            list.forEach((v, i) => {
+                list[i].x = v.sx + (v.ex - v.sx) * playTime / time;
+                list[i].y = v.sy + (v.ey - v.sy) * playTime / time
+                list[i].s = v.ss + (v.es - v.ss) * playTime / time
+            })
+            this.list = [...list]
+        }
+        render = () => {
+            var cxt = this.cxt
+            var img = this.img
+            cxt.clearRect(0, 0, cxt.canvas.width, cxt.canvas.height);
+            // cxt.fillStyle = ball.color;
+
+            cxt.beginPath();
+            this.list.forEach(v => {
+                cxt.drawImage(img, v.x, v.y, v.s, v.s)
+            })
+            // cxt.arc(ball.x, ball.y, ball.r, 0, 2 * Math.PI);
+
+            cxt.closePath();
+            cxt.fill();
+
+        }
+        remove = () => {
+            this.ref.removeChild(this.canvas)
+        }
+        // Anim.config = { width, height, time }
+
+
+    }
+
+    let root = document.getElementById('root')
+    var anim = new GiftAnim({
+        ref: root,
+        width: 830,
+        height: 490,
+        time: 1000,
+    })
+    anim.run()
+</script>
+
+</html>

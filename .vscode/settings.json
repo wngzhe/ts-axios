@@ -4,6 +4,7 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "eslint.autoFixOnSave": true,
+    "javascript.validate.enable": false,
     "eslint.validate": [
         "javascript",
         "javascriptreact",

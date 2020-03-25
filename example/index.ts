@@ -1,3 +1,3 @@
-let myName = 'Tom';
-
-interface Foo = { a: string }
+interface Foo { a: string, b: number }
+let my: string
+my = 'wewe'

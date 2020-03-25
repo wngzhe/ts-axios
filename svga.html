@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            height: 100vh;
+            /*display: flex;*/
+            /*justify-items: center;*/
+            /*align-items: center;*/
+        }
+
+        #app {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            /*display: flex;*/
+            flex: 1;
+            height: 100vh;
+            /*justify-items: center;*/
+            /*align-items: center;*/
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/svgaplayerweb@2.3.0/build/svga.min.js"></script>
+<script>
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    var svga = getQueryString('svga') || 'http://119.27.167.20:8008/gift/5cdcd9d69d1af.svga'
+    var player = new SVGA.Player('#app');
+    var parser = new SVGA.Parser('#app'); // Must Provide same selector eg:#demoCanvas IF support IE6+
+    parser.load(svga, function (videoItem) {
+        player.loops = 1;
+        player.setVideoItem(videoItem);
+        player.startAnimation();
+        player.onFinished(function () {
+            player.clear()
+            // document.getElementById('demoCanvas').innerHTML =''
+        })
+        player.clearDynamicObjects()
+    })
+</script>
+
+</html>
